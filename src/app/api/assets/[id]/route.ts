@@ -3,13 +3,13 @@ import { supabase } from '@/lib/supabase';
 
 export async function GET(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
     const { data, error } = await supabase
       .from('assets')
       .select('*')
-      .eq('id', params.id)
+      .eq('id', (await params).id)
       .single();
     
     if (error) throw error;
@@ -28,7 +28,7 @@ export async function GET(
 
 export async function PUT(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
     const body = await request.json();
@@ -36,7 +36,7 @@ export async function PUT(
     const { data, error } = await supabase
       .from('assets')
       .update(body)
-      .eq('id', params.id)
+      .eq('id', (await params).id)
       .select()
       .single();
     
@@ -56,13 +56,13 @@ export async function PUT(
 
 export async function DELETE(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
     const { error } = await supabase
       .from('assets')
       .delete()
-      .eq('id', params.id);
+      .eq('id', (await params).id);
     
     if (error) throw error;
     

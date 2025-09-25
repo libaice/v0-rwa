@@ -13,16 +13,19 @@ interface PriceData {
   low: number;
 }
 
+interface CurrentPrice {
+  price: number;
+  change24h: number;
+  high24h: number;
+  low24h: number;
+  volume24h: number;
+}
+
 export default function PricesPage() {
   const [selectedAsset, setSelectedAsset] = useState("GOLD");
   const [priceHistory, setPriceHistory] = useState<PriceData[]>([]);
-  const [currentPrice, setCurrentPrice] = useState<any>(null);
+  const [currentPrice, setCurrentPrice] = useState<CurrentPrice | null>(null);
   const [timeRange, setTimeRange] = useState("24h");
-  const [loading, setLoading] = useState(true);
-
-  useEffect(() => {
-    fetchPriceData();
-  }, [selectedAsset, timeRange]);
 
   const fetchPriceData = async () => {
     try {
@@ -39,10 +42,14 @@ export default function PricesPage() {
       });
     } catch (error) {
       console.error("Failed to fetch price data:", error);
-    } finally {
-      setLoading(false);
     }
   };
+
+  useEffect(() => {
+    fetchPriceData();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [selectedAsset, timeRange]);
+
 
   const generateMockPriceHistory = (range: string) => {
     const now = new Date();
@@ -160,7 +167,7 @@ export default function PricesPage() {
                           tickFormatter={(value) => `$${value.toFixed(0)}`}
                         />
                         <Tooltip 
-                          formatter={(value: any) => formatPrice(value)}
+                          formatter={(value) => formatPrice(value as number)}
                           labelFormatter={(label) => new Date(label).toLocaleString()}
                         />
                         <Line 

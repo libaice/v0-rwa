@@ -24,8 +24,15 @@ export async function POST(request: NextRequest) {
     // Initialize aggregator
     const aggregator = new PriceAggregator();
     
+    interface PriceSource {
+      name: string;
+      price: number;
+      timestamp?: string;
+      confidence?: number;
+    }
+
     // Prepare price sources
-    const priceSources = sources.map((source: any) => ({
+    const priceSources = sources.map((source: PriceSource) => ({
       source: source.name,
       price: source.price,
       timestamp: new Date(source.timestamp || Date.now()),
@@ -46,7 +53,7 @@ export async function POST(request: NextRequest) {
     await supabase.from('price_feeds').insert(priceFeeds);
 
     // Save aggregation result
-    const { data: aggregation, error: aggregationError } = await supabase
+    const { error: aggregationError } = await supabase
       .from('price_aggregations')
       .insert([{
         asset_id: asset.id,

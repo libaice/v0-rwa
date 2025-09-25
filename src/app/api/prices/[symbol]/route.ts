@@ -3,14 +3,15 @@ import { supabase } from '@/lib/supabase';
 
 export async function GET(
   request: NextRequest,
-  { params }: { params: { symbol: string } }
+  { params }: { params: Promise<{ symbol: string }> }
 ) {
   try {
     // First get the asset ID from symbol
+    const resolvedParams = await params;
     const { data: asset, error: assetError } = await supabase
       .from('assets')
       .select('id')
-      .eq('symbol', params.symbol.toUpperCase())
+      .eq('symbol', resolvedParams.symbol.toUpperCase())
       .single();
     
     if (assetError || !asset) {
@@ -45,7 +46,7 @@ export async function GET(
     
     return NextResponse.json({
       data: {
-        symbol: params.symbol.toUpperCase(),
+        symbol: resolvedParams.symbol.toUpperCase(),
         price: latestPrice.price,
         timestamp: latestPrice.timestamp,
         change24h,

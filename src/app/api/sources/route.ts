@@ -37,7 +37,7 @@ export async function POST(request: NextRequest) {
         if (!response.ok) {
           throw new Error('API endpoint is not accessible');
         }
-      } catch (error) {
+      } catch {
         throw new Error('Failed to validate API endpoint');
       }
     }

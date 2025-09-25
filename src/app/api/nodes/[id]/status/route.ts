@@ -3,7 +3,7 @@ import { supabase } from '@/lib/supabase';
 
 export async function PUT(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
     const body = await request.json();
@@ -16,7 +16,7 @@ export async function PUT(
     const { data, error } = await supabase
       .from('oracle_nodes')
       .update({ is_active })
-      .eq('id', params.id)
+      .eq('id', (await params).id)
       .select()
       .single();
     

@@ -1,13 +1,13 @@
 import { useEffect, useRef, useState } from 'react';
 
-interface WebSocketMessage {
+interface WebSocketMessage<T = unknown> {
   type: string;
-  data: any;
+  data: T;
 }
 
 export function useWebSocket(url: string) {
   const [isConnected, setIsConnected] = useState(false);
-  const [lastMessage, setLastMessage] = useState<WebSocketMessage | null>(null);
+  const [lastMessage, setLastMessage] = useState<WebSocketMessage<unknown> | null>(null);
   const wsRef = useRef<WebSocket | null>(null);
   const reconnectTimeoutRef = useRef<NodeJS.Timeout | null>(null);
 
@@ -69,7 +69,7 @@ export function useWebSocket(url: string) {
     };
   }, [url]);
 
-  const sendMessage = (message: WebSocketMessage) => {
+  const sendMessage = (message: WebSocketMessage<unknown>) => {
     if (wsRef.current && wsRef.current.readyState === WebSocket.OPEN) {
       wsRef.current.send(JSON.stringify(message));
     } else {
@@ -77,7 +77,7 @@ export function useWebSocket(url: string) {
     }
   };
 
-  const subscribe = (channel: string, params?: any) => {
+  const subscribe = (channel: string, params?: Record<string, unknown>) => {
     sendMessage({
       type: 'subscribe',
       data: { channel, ...params },

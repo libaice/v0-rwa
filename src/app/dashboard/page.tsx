@@ -31,7 +31,6 @@ export default function DashboardPage() {
   });
   
   const [recentPrices, setRecentPrices] = useState<RecentPrice[]>([]);
-  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     fetchDashboardData();
@@ -64,8 +63,6 @@ export default function DashboardPage() {
       ]);
     } catch (error) {
       console.error("Failed to fetch dashboard data:", error);
-    } finally {
-      setLoading(false);
     }
   };
 

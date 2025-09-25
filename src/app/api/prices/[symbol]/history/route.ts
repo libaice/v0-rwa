@@ -3,7 +3,7 @@ import { supabase } from '@/lib/supabase';
 
 export async function GET(
   request: NextRequest,
-  { params }: { params: { symbol: string } }
+  { params }: { params: Promise<{ symbol: string }> }
 ) {
   try {
     const searchParams = request.nextUrl.searchParams;
@@ -15,7 +15,7 @@ export async function GET(
     const { data: asset, error: assetError } = await supabase
       .from('assets')
       .select('id')
-      .eq('symbol', params.symbol.toUpperCase())
+      .eq('symbol', (await params).symbol.toUpperCase())
       .single();
     
     if (assetError || !asset) {
@@ -55,8 +55,14 @@ export async function GET(
   }
 }
 
+interface PriceFeedItem {
+  price: number;
+  timestamp: string;
+  source: string;
+}
+
 function aggregateByInterval(
-  data: any[],
+  data: PriceFeedItem[],
   interval: string
 ): Array<{ timestamp: string; price: number; high: number; low: number; count: number }> {
   if (!data || data.length === 0) return [];
@@ -71,7 +77,7 @@ function aggregateByInterval(
     '1d': 24 * 60 * 60 * 1000,
   }[interval] || 60 * 60 * 1000;
   
-  const buckets = new Map<number, any[]>();
+  const buckets = new Map<number, PriceFeedItem[]>();
   
   data.forEach(item => {
     const bucketTime = Math.floor(new Date(item.timestamp).getTime() / intervalMs) * intervalMs;

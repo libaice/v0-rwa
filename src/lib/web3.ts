@@ -64,9 +64,9 @@ export class Web3Service {
         method: 'wallet_switchEthereumChain',
         params: [{ chainId: `0x${chainId.toString(16)}` }],
       });
-    } catch (error: any) {
+    } catch (error) {
       // Chain not added to MetaMask
-      if (error.code === 4902) {
+      if (error && typeof error === 'object' && 'code' in error && error.code === 4902) {
         throw new Error('Please add this chain to MetaMask');
       }
       throw error;
