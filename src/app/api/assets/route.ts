@@ -3,6 +3,10 @@ import { supabase } from '@/lib/supabase';
 
 export async function GET(request: NextRequest) {
   try {
+    if (!supabase) {
+      throw new Error('Database connection not configured');
+    }
+    
     const searchParams = request.nextUrl.searchParams;
     const asset_type = searchParams.get('asset_type');
     const status = searchParams.get('status');
@@ -35,6 +39,10 @@ export async function GET(request: NextRequest) {
 
 export async function POST(request: NextRequest) {
   try {
+    if (!supabase) {
+      throw new Error('Database connection not configured');
+    }
+    
     const body = await request.json();
     
     const { data, error } = await supabase

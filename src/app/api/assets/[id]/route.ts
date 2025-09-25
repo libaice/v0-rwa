@@ -6,6 +6,10 @@ export async function GET(
   { params }: { params: Promise<{ id: string }> }
 ) {
   try {
+    if (!supabase) {
+      throw new Error('Database connection not configured');
+    }
+    
     const { data, error } = await supabase
       .from('assets')
       .select('*')
@@ -31,6 +35,10 @@ export async function PUT(
   { params }: { params: Promise<{ id: string }> }
 ) {
   try {
+    if (!supabase) {
+      throw new Error('Database connection not configured');
+    }
+    
     const body = await request.json();
     
     const { data, error } = await supabase
@@ -59,6 +67,10 @@ export async function DELETE(
   { params }: { params: Promise<{ id: string }> }
 ) {
   try {
+    if (!supabase) {
+      throw new Error('Database connection not configured');
+    }
+    
     const { error } = await supabase
       .from('assets')
       .delete()
