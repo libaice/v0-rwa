@@ -8,11 +8,11 @@ import { Menu, X, ChevronDown, TrendingUp, TrendingDown, Circle, Search, Globe, 
 import { Button } from "@/components/ui/button"
 
 const navigation = [
-  { name: "Products", href: "/products" },
-  { name: "Solutions", href: "/solutions" },
-  { name: "Developers", href: "/developers" },
-  { name: "About", href: "/about" },
-  { name: "Docs", href: "/docs" },
+  { name: "Dashboard", href: "/dashboard" },
+  { name: "Nodes", href: "/nodes" },
+  { name: "Assets", href: "/assets" },
+  { name: "Prices", href: "/prices" },
+  { name: "Docs", href: "https://rwa-oracle.gitbook.io/rwa-oracle-docs/"  },
 ]
 
 // Mock price data - in real app, this would come from an API
@@ -94,25 +94,30 @@ export function Header() {
 
           {/* Desktop Navigation */}
           <nav className="hidden lg:flex items-center space-x-1">
-            {navigation.map((item) => (
-              <Link
-                key={item.href}
-                href={item.href}
-                className={cn(
-                  "relative px-4 py-2 text-sm font-medium transition-all duration-200 group",
-                  pathname?.startsWith(item.href)
-                    ? "text-white"
-                    : "text-muted-foreground hover:text-white"
-                )}
-              >
-                {item.name}
-                {/* Hover effect */}
-                <span className={cn(
-                  "absolute bottom-0 left-0 w-full h-0.5 gradient-secondary transform origin-left transition-transform duration-300",
-                  pathname?.startsWith(item.href) ? "scale-x-100" : "scale-x-0 group-hover:scale-x-100"
-                )} />
-              </Link>
-            ))}
+            {navigation.map((item) => {
+              const isExternal = item.href.startsWith("http");
+              return (
+                <Link
+                  key={item.href}
+                  href={item.href}
+                  target={isExternal ? "_blank" : undefined}
+                  rel={isExternal ? "noopener noreferrer" : undefined}
+                  className={cn(
+                    "relative px-4 py-2 text-sm font-medium transition-all duration-200 group",
+                    pathname?.startsWith(item.href)
+                      ? "text-white"
+                      : "text-muted-foreground hover:text-white"
+                  )}
+                >
+                  {item.name}
+                  {/* Hover effect */}
+                  <span className={cn(
+                    "absolute bottom-0 left-0 w-full h-0.5 gradient-secondary transform origin-left transition-transform duration-300",
+                    pathname?.startsWith(item.href) ? "scale-x-100" : "scale-x-0 group-hover:scale-x-100"
+                  )} />
+                </Link>
+              );
+            })}
           </nav>
 
           {/* Right Side Features */}
@@ -169,21 +174,26 @@ export function Header() {
         isMobileMenuOpen ? "translate-y-0 opacity-100" : "-translate-y-full opacity-0"
       )}>
         <nav className="p-6 space-y-4">
-          {navigation.map((item) => (
-            <Link
-              key={item.href}
-              href={item.href}
-              onClick={() => setIsMobileMenuOpen(false)}
-              className={cn(
-                "block px-4 py-2 text-base font-medium rounded-lg transition-colors",
-                pathname?.startsWith(item.href)
-                  ? "bg-card text-white"
-                  : "text-muted-foreground hover:bg-card/50 hover:text-white"
-              )}
-            >
-              {item.name}
-            </Link>
-          ))}
+          {navigation.map((item) => {
+            const isExternal = item.href.startsWith("http");
+            return (
+              <Link
+                key={item.href}
+                href={item.href}
+                target={isExternal ? "_blank" : undefined}
+                rel={isExternal ? "noopener noreferrer" : undefined}
+                onClick={() => setIsMobileMenuOpen(false)}
+                className={cn(
+                  "block px-4 py-2 text-base font-medium rounded-lg transition-colors",
+                  pathname?.startsWith(item.href)
+                    ? "bg-card text-white"
+                    : "text-muted-foreground hover:bg-card/50 hover:text-white"
+                )}
+              >
+                {item.name}
+              </Link>
+            );
+          })}
           
           {/* Mobile Price Display */}
           <div className="mt-6 pt-6 border-t border-border">
